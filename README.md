@@ -6,7 +6,8 @@ Current research on adversarial examples is largely focussed on deriving general
 ## II. Background
 Deep neural networks are known for their high predictive capabilities, especially in comparison to humans. Yet, Szegedy et. al. (2014) discovered that this does not hold true in all contexts. They proved that several machine learning models, including state-of-the-art deep neural networks, are susceptible to adversarial examples, i.e, “ inputs to machine learning models designed by an adversary to cause an incorrect output” (Quin, et. al.). Given hat Machine Learning models are becoming ubiquitous, there is an increasing urgency for us to evaluate their susceptibility to these attacks, especially when the risks associated are high. In the context of image classification, these adversarial examples could lead to potentially harmful situations. For example, autonomous cars could be targetted to classify a sticker as a stop sign which can cause the car to brake unexpectedly (Goodfellow, et al. 2015). Similarly, face recognition and other biometric models, used to prevent unauthorized access to sensitive databases, could be fooled into allowing access via adversarial examples. In these cases within computer vision, the adversarial examples are usually images formed by making small perturbations to an example image through a gradient-based optimization approach.  
 
-![Panda Example](/Panda_example.png)
+![Panda Example](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/Panda_example.png)
+
 ###### **Figure 1:** An adversarial input, overlaid on a typical image, can cause a classifier to miscategorize a panda as a gibbon. (Goodfellow et al. 2015) ######
 
 In the context of object recognition, adversarial examples are formed by applying a small perturbation to an image from the dataset such that the ML classifier is coerced into misclassifying the image according to the requirement of the adversary. Figure 1 depicts a canonical example in which a relatively small perturbation to an image of a panda causes it to be misclassified as a gibbon. According to Elsayed et. al. (2018), “this perturbation is small enough to be imperceptible (i.e., it cannot be saved in a standard png file that uses 8 bits because the perturbation is smaller than 1/255 of the pixel dynamic range). This perturbation relies on carefully chosen structure based on the parameters of the neural network—but when magnified to be perceptible, human observers cannot recognize any meaningful structure.” This example depicts a counter-intuitive notion in which humans recognize the correct classification due to a high-level examination of the image, but a classifier is pushed towards misclassification due to its ability (or “unfortunate” ability in this case) to analyze the image in multiple dimensions by creating an effective latent space. 
@@ -40,8 +41,21 @@ With an aim to understand the robustness of various classification networks, we 
 ## IV. Experimental Results:
 The following Tables (2, 3) and Figures (2, 3, 4, 5) depict the results of our experiment on the VAE and CNN using the LFW and MNIST datasets.
 
-![GitHub Logo](/images/logo.png)
+![Results Table](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/Results_VAE_CNN.png)
 
+###### **Table 2:** Results for BIM, LBFGS and L1 Basic Iterative Attack on the Labelled Faces in the Wild and MNIST datasets on the VAE and CNN. The attack on the LFW dataset was targetted to change the image of Hugo Chavez such that the classifier would misclassify it as Ariel Sharon with a certain confidence. The images for the VAE and CNN can be seen in Figure 2 and Figure 3 respectively. On the other hand, The attack on the MNIST dataset was targeted to change the image of ‘3’ such that the classifier would misclassify it as ‘8’ with a certain confidence. The images for the VAE and CNN can be seen in Figure 4 and Figure 5 respectively.
+
+![VAE LFW Results](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/VAE_LFW_Images.png)
+###### **Figure 2:** Original and Hacked images when we attack the LFW dataset and classify using a Convolutional VAE.
+
+![VAE MNIST Results](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/VAE_MNIST_Images.png)
+###### **Figure 3:** Original and Hacked images when we attack the MNIST dataset and classify using a Convolutional VAE.
+
+![CNN LFW Results](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/CNN_LFW_Images.png)
+###### **Figure 4:** Original and Hacked images when we attack the LFW dataset and classify using a Convolutional Neural Network (CNN).
+
+![CNN MNIST Results](https://github.com/Rendezvous97/Examining-Adversarial-Attacks-on-Image-Classification-Models/blob/master/Results%20and%20Misc.%20Images/CNN_MNIST_Images.png)
+###### **Figure 5:** Original and Hacked images when we attack the LFW dataset and classify using a Convolutional Neural Network (CNN).
 
 ## V. Inferences:
 The following is a summary of our inferences from the above results. 
@@ -64,7 +78,6 @@ The following are some existing defensive tactics to protect deep ML models from
 1. **Input Based:** Through our experiments, we observed that low-pixel density input images are highly effective in reducing the validity of the adversarial image. Hence, models which use black and white or/and small-sized input images will be relatively more secure against gradient based attacks. This follows from the intuition that low-pixel density images can be perturbed only negligibly due to the few numbers of pixels. Hence, any large perturbation will lead to the image looking different, which can be caught by the human eye.
 
 1. **Procedural:** 
-
     1. Since the most effective white box attacks are gradient-based attacks, a major way to defend against these attacks are to hide the gradient from the attacker. Thus, by converting the setting of the attack to a black box, it is possible to defend against gradient-based attacks.
     1. Another widespread method used to defend against adversarial examples is defensive distillation. Defensive distillation has two main processes. The first process referred to as the teacher model is training the network in the standard manner. Then, by modifying the softmax function, we assign soft labels to each training example in the training model. For example, a soft label for an image of the digit 7 might say it has an 80% chance of being a seven and 20% chance of being a one. The soft labels obtained from the teacher model contain significantly more relevant information about the features of the image. So, by training over these soft labels, the distilled model learns the feature space for each image. This refined model becomes more robust as its vulnerability to an attacker trying to misclassify an image drastically reduces (Yuan et al). In our earlier example, if the same image of the digit 7 were to be attacked and perturbed to be classified as the digit 4, the distilled model would classify it as the digit 4 with extremely low accuracy. This is because of the difference between the feature space for the digit 7 and the digit 4.
     1. The last procedural defensive strategy we could adopt is a brute force strategy. By training the model overall adversarial examples, the effectiveness of the attack will inevitably reduce. However, the brute force strategy proves to be highly impractical because of the numerous types of attacks generating a high number of adversarial examples.
@@ -72,14 +85,22 @@ The following are some existing defensive tactics to protect deep ML models from
 ## VII. Future Scope and Conclusion
 We have seen how different networks have fared against multiple types of attacks and concluded that each network has a vulnerability of its own. The next step in this field of study would be to secure these network using either of the defensive strategies mentioned above and further compare them. Given time and computation power, we will be able to train our CNNs with Defensive Distillation making it more robust.
 
+## References
 
+Carlini, Nicholas, and David Wagner. “Towards Evaluating the Robustness of Neural Networks.” ArXiv.org, 1 Aug. 2016, https://arxiv.org/pdf/1608.04644.pdf
 
+Elsayed, et al. “Adversarial Examples That Fool Both Computer Vision and Time-Limited Humans.” ArXiv.org, 22 May 2018, arxiv.org/abs/1802.08195.
 
+Gary B. Huang, Manu Ramesh, Tamara Berg, and Erik Learned-Miller. “Labeled Faces in the Wild: A Database for Studying Face Recognition in Unconstrained Environments.” University of Massachusetts, Amherst, Technical Report 07-49, October, 2007. http://vis-www.cs.umass.edu/lfw/
 
+Goodfellow, et al. “Explaining and Harnessing Adversarial Examples.” ArXiv.org, 20 Mar. 2015, arxiv.org/abs/1412.6572. arxiv.org/pdf/1412.6572.pdf
 
+LeCun, Yann and Cortes, Corinna. "MNIST handwritten digit database." , 2010. http://yann.lecun.com/exdb/mnist/
 
+Papernot, Nicolas, et al. “Distillation as a Defense to Adversarial Perturbations ...” ArXiv.org, 14 Mar. 2016, arxiv.org/pdf/1511.04508.pdf.
 
+Qin, Yao, et al. “Imperceptible, Robust, and Targeted Adversarial Examples for Automatic Speech Recognition.” ArXiv.org, arxiv.org/pdf/1903.10346.pdf
 
+Szegedy, et al. “Intriguing Properties of Neural Networks.” ArXiv.org, 19 Feb. 2014, arxiv.org/abs/1312.6199. arxiv.org/pdf/1312.6199.pdf
 
-
-
+Yuan, Xiaoyong, et al. (PDF) Adversarial Examples: Attacks and Defenses for Deep www.researchgate.net/publication/323267590_Adversarial_Examples_Attacks_and_Defenses_for_Deep_Learning.
